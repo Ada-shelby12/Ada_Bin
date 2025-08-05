@@ -1,0 +1,39 @@
+To add your code to a repository owned by Linus Torvalds (such as torvalds/linux), you generally cannot push directly unless you have collaborator access. Here’s how you can contribute code:
+
+1. **Fork the Repository**  
+   Go to the torvalds repository (e.g., [torvalds/linux](https://github.com/torvalds/linux)) and click the “Fork” button. This creates a copy of the repository under your own GitHub account.
+
+2. **Clone Your Fork Locally**  
+   Copy the URL of your fork and run:
+   ```bash
+   git clone https://github.com/<your-username>/linux.git
+   cd linux
+   ```
+
+3. **Create a New Branch**  
+   It’s best practice to create a feature branch for your changes:
+   ```bash
+   git checkout -b my-feature-branch
+   ```
+
+4. **Add Your Code**  
+   Make your changes or add your code using your preferred editor.
+
+5. **Commit and Push Your Changes**  
+   ```bash
+   git add .
+   git commit -m "Describe your change"
+   git push origin my-feature-branch
+   ```
+
+6. **Create a Pull Request (PR)**  
+   Go to your fork on GitHub, and you’ll see a “Compare & pull request” button. Click it to open a PR against torvalds/linux. Fill out the PR template with details of your change.
+
+7. **Wait for Review**  
+   Maintainers will review your PR. Follow any requested changes and communicate respectfully.
+
+**Notes:**  
+- For major projects like Linux, you may need to follow specific contribution guidelines.  
+- Your PR should be well-tested and documented.  
+- Large projects often have mailing lists or additional steps for contributions.
+
