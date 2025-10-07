@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Tracker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f9fafc;
+      color: #333;
+      scroll-behavior: smooth;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #0f172a;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+    header h1 { margin: 0; font-size: 1.4rem; }
+    nav a {
+      color: white;
+      margin: 0 12px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover { color: #38bdf8; }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6rem 2rem 4rem;
+      min-height: 100vh;
+      color: rgb(209, 21, 21);
+      background: linear-gradient(rgba(183, 196, 226, 0.85), rgba(218, 222, 231, 0.85)),
+                  url('https://images.unsplash.com/photo-1581090700227-4c4f50b1a3f5?auto=format&fit=crop&w=1600&q=80')
+                  no-repeat center center/cover;
+    }
+    .hero-text { max-width: 50%; }
+    .hero-text h2 { font-size: 2.5rem; margin-bottom: 1rem; color: #f8fafc; }
+    .hero-text p { font-size: 1.2rem; margin-bottom: 1.5rem; color: #e2e8f0; }
+    .hero-text button {
+      padding: 12px 28px;
+      background: #38bdf8;
+      border: none;
+      border-radius: 6px;
+      color: #61072a;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .hero-text button:hover { background: #0ea5e9; color: white; }
+    .hero img {
+      max-width: 40%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(236, 12, 12, 0.3);
+    }
+
+    /* Highlights */
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding: 3rem 2rem;
+      background: white;
+    }
+    .highlight {
+      background: #f8fafc;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .highlight h3 { margin: 0.5rem 0; font-size: 1.6rem; color: #0ea5e9; }
+
+    /* Why Choose Section */
+    .features {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: #f9fafb;
+    }
+    .features h2 { margin-bottom: 2rem; font-size: 2rem; color: #0f172a; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .feature {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      text-align: left;
+      transition: transform 0.2s;
+    }
+    .feature:hover { transform: translateY(-4px); }
+    .feature h3 { margin-bottom: 0.5rem; color: #0ea5e9; }
+
+    /* Footer */
+    footer {
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero-text { max-width: 100%; }
+      .hero img { max-width: 80%; margin-top: 1.5rem; }
+      .highlights { grid-template-columns: 1fr 1fr; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>📦 Inventory Tracker</h1>
+    <nav>
+      <a href="#hero">Home</a>
+      <a href="#highlights">Highlights</a>
+      <a href="#features">Why Choose</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  
+<section class="hero">
+  <div class="hero-text">
+    <h2>Smart Inventory Management, Simplified</h2>
+    <p>Track stock in real time, manage suppliers, and make data‑driven decisions with ease.</p>
+    <button>Get Started</button>
+  </div>
+  <div class="hero-image"></div>
+</section>
+
+<style>
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 90vh;
+  padding: 4rem 2rem;
+  background: #6d678b; /* fallback background */
+  color: white;
+}
+
+.hero-text {
+  flex: 1;
+  max-width: 50%;
+}
+
+.hero-text h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #f8fafc;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #e2e8f0;
+}
+
+.hero-text button {
+  padding: 12px 28px;
+  background: #38bdf8;
+  border: none;
+  border-radius: 6px;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.hero-text button:hover {
+  background: #0ea5e9;
+  color: white;
+}
+
+/* Right side background image */
+.hero-image {
+  flex: 1;
+  min-height: 70vh;
+  border-radius: 8px;
+  background: url('https://images.unsplash.com/photo-1581090700227-4c4f50b1a3f5?auto=format&fit=crop&w=800&q=80')
+              no-repeat center center/cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+  .hero-text {
+    max-width: 100%;
+  }
+  .hero-image {
+    width: 100%;
+    min-height: 300px;
+    margin-top: 1.5rem;
+  }
+}
+</style>
+
+  <!-- Highlights -->
+  <section id="highlights" class="highlights">
+    <div class="highlight">
+      <h3>📊</h3>
+      <p>Real-Time Dashboard</p>
+    </div>
+    <div class="highlight">
+      <h3>📦</h3>
+      <p>Smart Stock Management</p>
+    </div>
+    <div class="highlight">
+      <h3>🔔</h3>
+      <p>Low Stock Alerts</p>
+    </div>
+    <div class="highlight">
+      <h3>📑</h3>
+      <p>Reports & Analytics</p>
+    </div>
+  </section>
+
+  <!-- Why Choose -->
+  <section id="features" class="features">
+    <h2>Why Choose Inventory Tracker?</h2>
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>Efficiency</h3>
+        <p>Save time with automated tracking and updates.</p>
+      </div>
+      <div class="feature">
+        <h3>Accuracy</h3>
+        <p>Reduce errors with barcode and QR code support.</p>
+      </div>
+      <div class="feature">
+        <h3>Scalability</h3>
+        <p>Manage multiple warehouses and suppliers with ease.</p>
+      </div>
+      <div class="feature">
+        <h3>Accessibility</h3>
+        <p>Mobile-friendly design for on-the-go inventory updates.</p>
+      </div>
+      <div class="feature">
+        <h3>Insights</h3>
+        <p>Generate detailed reports to guide business decisions.</p>
+      </div>
+      <div class="feature">
+        <h3>Security</h3>
+        <p>Role-based access control keeps your data safe.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Inventory Tracker | All Rights Reserved</p>
+  </footer>
+
+</body>
+</html>
