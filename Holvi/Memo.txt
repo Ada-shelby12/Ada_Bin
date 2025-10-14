@@ -1,0 +1,601 @@
+You've built a great-looking frontend for an inventory management system. Now, let's wire it up with PHP to handle the CRUD (Create, Read, Update, Delete) operations using a real database instead of localStorage.
+
+Here’s a complete step-by-step guide to transform your project into a fully functional web application.
+
+## Step 1: Prerequisites (Setting up Your Environment)
+Before we start, you need a local server environment that can run PHP and a MySQL database. The easiest way to get this is by installing XAMPP or WAMP.
+
+Download and Install XAMPP: Go to the official XAMPP website and install it.
+
+Start Apache & MySQL: Open the XAMPP Control Panel and start the "Apache" and "MySQL" services.
+
+Locate htdocs: Find the htdocs folder inside your XAMPP installation directory (e.g., C:/xampp/htdocs/). This is where you will place your project files.
+
+Create a Project Folder: Inside htdocs, create a new folder for your project. Let's call it inventory. Copy all your HTML, CSS, and image files into this inventory folder.
+
+## Step 2: Database Setup
+We need a database to store user information and product data.
+
+Open phpMyAdmin: In your browser, go to http://localhost/phpmyadmin/.
+
+Create a Database: Click on the "Databases" tab, enter inventory_db as the database name, and click "Create".
+
+Create Tables: Select your inventory_db database, go to the "SQL" tab, and run the following queries to create the users and products tables.
+
+users Table
+This table will store login and signup information.
+
+SQL
+
+CREATE TABLE `users` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `fullname` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+products Table
+This table will store all your inventory items.
+
+SQL
+
+CREATE TABLE `products` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `summary` TEXT,
+  `price` DECIMAL(10, 2) NOT NULL,
+  `image_path` VARCHAR(255) DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+## Step 3: Backend PHP Scripts
+Now, let's create the PHP files that will handle the logic. Inside your inventory project folder, create a new folder named api. This is where we'll put all our backend files.
+
+Your project structure should look like this:
+
+htdocs/
+└── inventory/
+    ├── api/
+    │   ├── db_connect.php
+    │   ├── signup.php
+    │   ├── login.php
+    │   ├── logout.php
+    │   ├── create_product.php
+    │   ├── read_products.php
+    │   ├── update_product.php
+    │   ├── delete_product.php
+    ├── image/
+    │   └── ... (your images)
+    ├── uploads/  <-- Create this folder for product images
+    ├── login.html
+    ├── signup.html
+    ├── add.html
+    ├── view.html
+    ├── sim.html
+    └── ... (other html files)
+Create the following files inside the api folder.
+
+1. api/db_connect.php (Database Connection)
+This file will connect to your MySQL database.
+
+PHP
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = ""; // Default XAMPP password is empty
+$dbname = "inventory_db";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+?>
+2. api/signup.php (Handle User Registration)
+This script takes the signup form data, hashes the password for security, and inserts it into the users table.
+
+PHP
+
+<?php
+include 'db_connect.php';
+
+header('Content-Type: application/json');
+
+$fullname = $_POST['fullname'];
+$email = $_POST['email'];
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+// Basic validation
+if (empty($fullname) || empty($email) || empty($username) || empty($password)) {
+    echo json_encode(['success' => false, 'message' => 'Please fill all fields.']);
+    exit;
+}
+
+// Hash the password for security
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+$stmt = $conn->prepare("INSERT INTO users (fullname, email, username, password) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("ssss", $fullname, $email, $username, $hashed_password);
+
+if ($stmt->execute()) {
+    echo json_encode(['success' => true, 'message' => 'Signup successful!']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Error: ' . $stmt->error]);
+}
+
+$stmt->close();
+$conn->close();
+?>
+3. api/login.php (Handle User Login)
+This checks credentials, verifies the hashed password, and starts a session.
+
+PHP
+
+<?php
+session_start();
+include 'db_connect.php';
+
+header('Content-Type: application/json');
+
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+$stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($id, $hashed_password);
+    $stmt->fetch();
+
+    if (password_verify($password, $hashed_password)) {
+        // Password is correct, start the session
+        $_SESSION['loggedin'] = true;
+        $_SESSION['id'] = $id;
+        $_SESSION['username'] = $username;
+        echo json_encode(['success' => true, 'message' => 'Login successful!']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Incorrect password.']);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Username not found.']);
+}
+
+$stmt->close();
+$conn->close();
+?>
+4. api/create_product.php (Create Operation)
+This handles the form from add.html, including the image upload.
+
+PHP
+
+<?php
+include 'db_connect.php';
+header('Content-Type: application/json');
+
+$response = ['success' => false, 'message' => 'An error occurred.'];
+
+$name = $_POST['name'] ?? '';
+$price = $_POST['price'] ?? 0;
+$summary = $_POST['summary'] ?? '';
+$image_path = null;
+
+// Handle file upload
+if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+    $target_dir = "../uploads/";
+    $image_name = time() . '_' . basename($_FILES["image"]["name"]);
+    $target_file = $target_dir . $image_name;
+    
+    // Move the uploaded file to the 'uploads' directory
+    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+        $image_path = "uploads/" . $image_name;
+    } else {
+        $response['message'] = 'Failed to upload image.';
+        echo json_encode($response);
+        exit;
+    }
+}
+
+$stmt = $conn->prepare("INSERT INTO products (name, summary, price, image_path) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("ssds", $name, $summary, $price, $image_path);
+
+if ($stmt->execute()) {
+    $response['success'] = true;
+    $response['message'] = 'Product added successfully!';
+} else {
+    $response['message'] = 'Database error: ' . $stmt->error;
+}
+
+$stmt->close();
+$conn->close();
+echo json_encode($response);
+?>
+5. api/read_products.php (Read Operation)
+Fetches all products from the database and returns them as JSON.
+
+PHP
+
+<?php
+include 'db_connect.php';
+header('Content-Type: application/json');
+
+$result = $conn->query("SELECT id, name, summary, price, image_path FROM products ORDER BY created_at DESC");
+
+$products = [];
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $products[] = $row;
+    }
+}
+
+echo json_encode($products);
+
+$conn->close();
+?>
+6. api/update_product.php (Update Operation)
+Updates a product's details in the database.
+
+PHP
+
+<?php
+include 'db_connect.php';
+header('Content-Type: application/json');
+
+// We are getting data as JSON from the frontend
+$data = json_decode(file_get_contents('php://input'), true);
+
+$id = $data['id'];
+$name = $data['name'];
+$summary = $data['summary'];
+$price = $data['price'];
+
+$stmt = $conn->prepare("UPDATE products SET name = ?, summary = ?, price = ? WHERE id = ?");
+$stmt->bind_param("ssdi", $name, $summary, $price, $id);
+
+if ($stmt->execute()) {
+    echo json_encode(['success' => true, 'message' => 'Product updated successfully.']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Error updating product: ' . $stmt->error]);
+}
+
+$stmt->close();
+$conn->close();
+?>
+7. api/delete_product.php (Delete Operation)
+Deletes a product record from the database.
+
+PHP
+
+<?php
+include 'db_connect.php';
+header('Content-Type: application/json');
+
+$data = json_decode(file_get_contents('php://input'), true);
+$id = $data['id'];
+
+// Optional: Also delete the image file from the server
+$stmt_select = $conn->prepare("SELECT image_path FROM products WHERE id = ?");
+$stmt_select->bind_param("i", $id);
+$stmt_select->execute();
+$stmt_select->bind_result($image_path);
+$stmt_select->fetch();
+$stmt_select->close();
+
+if ($image_path && file_exists('../' . $image_path)) {
+    unlink('../' . $image_path);
+}
+
+// Delete the record from the database
+$stmt_delete = $conn->prepare("DELETE FROM products WHERE id = ?");
+$stmt_delete->bind_param("i", $id);
+
+if ($stmt_delete->execute()) {
+    echo json_encode(['success' => true, 'message' => 'Product deleted successfully.']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'Error deleting product: ' . $stmt_delete->error]);
+}
+
+$stmt_delete->close();
+$conn->close();
+?>
+## Step 4: Modifying the Frontend to Use PHP
+Now, we need to update the JavaScript in your HTML files to communicate with these new PHP scripts instead of using localStorage. We will use the fetch API for this.
+
+1. In signup.html
+Replace the handleSignup function with this:
+
+HTML
+
+<script>
+async function handleSignup(event) {
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+
+  const fullname = document.querySelector("#fullname").value.trim();
+  const email = document.querySelector("#email").value.trim();
+  const username = document.querySelector("#username").value.trim();
+  const password = document.querySelector("#password").value.trim();
+  const confirmPassword = document.querySelector("#confirm-password").value.trim();
+
+  if (!fullname || !email || !username || !password || !confirmPassword) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+  
+  // Create FormData object to send to PHP
+  const postData = new FormData();
+  postData.append('fullname', fullname);
+  postData.append('email', email);
+  postData.append('username', username);
+  postData.append('password', password);
+
+  try {
+    const response = await fetch('api/signup.php', {
+      method: 'POST',
+      body: postData
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("Signup Successful! Redirecting to login...");
+      window.location.href = "login.html";
+    } else {
+      alert("Signup Failed: " + result.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+  }
+}
+</script>
+2. In login.html
+Replace the handleSubmit function:
+
+HTML
+
+<script>
+async function handleSubmit(event) {
+  event.preventDefault();
+  var username = document.querySelector("#username").value;
+  var password = document.querySelector("#password").value;
+
+  if (username.trim() === "" || password.trim() === "") {
+    alert("Please enter both username and password");
+    return;
+  }
+  
+  const postData = new FormData();
+  postData.append('username', username);
+  postData.append('password', password);
+
+  try {
+    const response = await fetch('api/login.php', {
+        method: 'POST',
+        body: postData
+    });
+    
+    const result = await response.json();
+
+    if (result.success) {
+        alert("Login Successful! Redirecting...");
+        window.location.href = "dashboard.html"; 
+    } else {
+        alert("Login Failed: " + result.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred during login.');
+  }
+}
+</script>
+3. In add.html
+Replace the form submission event listener:
+
+HTML
+
+<script>
+  // ... (keep all your existing code for image preview and tags) ...
+
+  const addProductForm = document.getElementById('add-product-form');
+  addProductForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const productName = document.getElementById('productName').value;
+    const price = document.getElementById('price').value;
+    const description = document.getElementById('description').value;
+    const imageFile = document.getElementById('file-input').files[0]; // Get the first selected file
+
+    if (!productName || !price || !imageFile) {
+        alert('Product Name, Price, and at least one Image are required.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', productName);
+    formData.append('price', price);
+    formData.append('summary', description);
+    formData.append('image', imageFile); // Append the file object
+
+    try {
+        const response = await fetch('api/create_product.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert('Product added successfully!');
+            window.location.href = 'sim.html'; // Redirect to the view page
+        } else {
+            alert('Error adding product: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while adding the product.');
+    }
+  });
+</script>
+4. In sim.html (The main CRUD view page)
+Replace the entire <script> block at the bottom with this new logic that uses fetch.
+
+HTML
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.getElementById('product-table-body');
+    const searchInput = document.getElementById('search-input');
+    const resetButton = document.getElementById('reset-btn');
+    const noProductsMessage = document.getElementById('no-products-message');
+    const saveEditBtn = document.getElementById('save-edit-btn');
+    const editModalEl = document.getElementById('editProductModal');
+    const editModal = new bootstrap.Modal(editModalEl);
+    let allProducts = []; // To store products for searching
+
+    async function loadProducts() {
+      try {
+        const response = await fetch('api/read_products.php');
+        allProducts = await response.json();
+        
+        displayProducts(allProducts);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+        noProductsMessage.style.display = 'block';
+        noProductsMessage.querySelector('h3').textContent = 'Error loading data.';
+      }
+    }
+
+    function displayProducts(products) {
+      tableBody.innerHTML = '';
+      if (products.length === 0) {
+        noProductsMessage.style.display = 'block';
+      } else {
+        noProductsMessage.style.display = 'none';
+        products.forEach(product => {
+          const row = tableBody.insertRow();
+          // Use a placeholder if image_path is null or empty
+          const imageUrl = product.image_path ? product.image_path : 'https://via.placeholder.com/50';
+          row.innerHTML = `
+            <td><img src="${imageUrl}" class="product-image" alt="${product.name}"></td>
+            <td class="product-name">${product.name}</td>
+            <td class="product-summary">${product.summary}</td>
+            <td class="price-sale">$${product.price}</td>
+            <td>
+              <button class="btn-action edit" data-id="${product.id}" title="Edit Product">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+              <button class="btn-action delete" data-id="${product.id}" title="Delete Product">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </td>`;
+        });
+      }
+      addEventListeners();
+    }
+
+    function addEventListeners() {
+      // DELETE logic
+      document.querySelectorAll('.delete').forEach(button => {
+        button.addEventListener('click', async function() {
+          const productId = this.getAttribute('data-id');
+          if (confirm('Are you sure you want to delete this product?')) {
+            try {
+              const response = await fetch('api/delete_product.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: productId })
+              });
+              const result = await response.json();
+              if (result.success) {
+                loadProducts(); // Reload table
+              } else {
+                alert('Error: ' + result.message);
+              }
+            } catch (error) {
+              console.error('Deletion error:', error);
+            }
+          }
+        });
+      });
+
+      // UPDATE logic (opening the modal)
+      document.querySelectorAll('.edit').forEach(button => {
+        button.addEventListener('click', function() {
+          const productId = this.getAttribute('data-id');
+          const productToEdit = allProducts.find(p => p.id == productId);
+
+          if (productToEdit) {
+            document.getElementById('edit-product-id').value = productToEdit.id;
+            document.getElementById('edit-product-name').value = productToEdit.name;
+            document.getElementById('edit-product-summary').value = productToEdit.summary;
+            document.getElementById('edit-product-price').value = productToEdit.price;
+            editModal.show();
+          }
+        });
+      });
+    }
+
+    // SAVE CHANGES logic for the modal
+    saveEditBtn.addEventListener('click', async function() {
+      const productData = {
+        id: document.getElementById('edit-product-id').value,
+        name: document.getElementById('edit-product-name').value,
+        summary: document.getElementById('edit-product-summary').value,
+        price: document.getElementById('edit-product-price').value
+      };
+
+      try {
+        const response = await fetch('api/update_product.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productData)
+        });
+        const result = await response.json();
+        if (result.success) {
+          editModal.hide();
+          loadProducts();
+        } else {
+          alert('Update failed: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Update error:', error);
+      }
+    });
+
+    // Search and Reset logic
+    searchInput.addEventListener('keyup', function() {
+      const query = searchInput.value.toLowerCase();
+      const filteredProducts = allProducts.filter(p => 
+        p.name.toLowerCase().includes(query) || p.summary.toLowerCase().includes(query)
+      );
+      displayProducts(filteredProducts);
+    });
+
+    resetButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      searchInput.value = '';
+      displayProducts(allProducts);
+    });
+
+    loadProducts(); // Initial load
+  });
+</script>
+## Step 5: Final Touches & Running the Project
+Check File Names: Ensure your view.html page (which might be the one with the table) is correctly named. You have sim.html which has the update modal, so I've provided the code for that file. If you also use view.html, apply similar changes there.
+
+Run It: Open your browser and navigate to http://localhost/inventory/. You 
