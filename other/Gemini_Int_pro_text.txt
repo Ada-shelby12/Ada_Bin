@@ -1,0 +1,89 @@
+
+Href:https://g.co/gemini/share/1909588ea53a
+
+These files represent six distinct data analytics case studies, each focused on a different functional area of a business.
+Here is an analysis and summary of each case study, along with individual definitions of the typical sub-tasks involved.
+1. HR Analytics: Employee Attrition & Performance Analysis
+This case study focuses on understanding the workforce, identifying factors that contribute to employee turnover (Attrition), and analyzing how employee attributes correlate with Performance Rating.
+| Key Data Fields | Analysis Focus |
+|---|---|
+| EmployeeData.csv | Age, Gender, Department, Designation, Salary, PerformanceRating, Attrition |
+Summary of the Case Study
+The primary goal is to build a model to predict which employees are most likely to leave (Attrition) and to identify the root causes (e.g., low salary, long tenure with low rating, specific department). The analysis also aims to understand which factors drive high Performance Ratings to help with talent retention and development.
+Sub-tasks and Definitions
+| Sub-task | Definition |
+|---|---|
+| Exploratory Data Analysis (EDA) | A foundational process of visually inspecting and statistically summarizing the main characteristics of the dataset (e.g., distribution of Salary, average Experience(Years) by Department, count of Attrition by Location). |
+| Attrition Risk Modeling | Developing a predictive model (e.g., Logistic Regression or Decision Tree) using features like Salary, Experience, and PerformanceRating to calculate the probability of an employee leaving the organization (Attrition = Yes). |
+| Key Driver Analysis (KDA) | Statistical methods (like feature importance from the attrition model) used to quantify which factors (Department, Salary, PerformanceRating, etc.) have the strongest influence on the desired outcomes (Attrition or PerformanceRating). |
+| Comparative Metrics Analysis | Calculating and comparing key ratios across different employee segments, such as the Attrition rate for employees with a low PerformanceRating vs. a high one, or salary disparity by Gender or Location. |
+2. Learning & Development: LMS Usage Effectiveness
+This case study examines how employees interact with the Learning Management System (LMS) to measure the consumption, engagement, and effectiveness of internal training programs.
+| Key Data Fields | Analysis Focus |
+|---|---|
+| LMSUsage.csv | Techno, CompletionStatus, Time Spent, Device, Country |
+Summary of the Case Study
+The objective is to evaluate the return on investment (ROI) of training. The analysis will identify popular vs. underutilized courses (Techno), determine if access methods (Device) or regional factors (Country) affect learning, and ultimately link Time Spent to positive outcomes like a Completed CompletionStatus. This helps optimize content and delivery.
+Sub-tasks and Definitions
+| Sub-task | Definition |
+|---|---|
+| Engagement Rate Calculation | Determining the percentage of users who have accessed a course and achieved a key milestone, such as changing their CompletionStatus from 'Not Started' to 'In Progress' or 'Completed'. |
+| Course Effectiveness Scoring | Developing a metric that combines CompletionStatus and Time Spent to score the overall quality and efficiency of a course (Techno), highlighting courses with high completion and low required time. |
+| Time-to-Completion Analysis | Analyzing the average duration (implied from AccessDate if used with a completion date) or explicitly defined Time Spent required to achieve a Completed CompletionStatus for different courses, identifying bottlenecks. |
+| Platform/Device Preference Analysis | Analyzing the distribution of Device used for course access across different geographies (Country) or course types to inform future content design (e.g., mobile-first vs. desktop-intensive). |
+3. Talent Acquisition: Hiring Effectiveness Analysis
+This case study focuses on improving the efficiency and quality of the recruitment process by analyzing candidate attributes against selection outcomes.
+| Key Data Fields | Analysis Focus |
+|---|---|
+| HiringData.csv | ExperienceYears, EducationLevel, ScoreInAssessment, InterviewRating, DomainKnowledge, Selected |
+Summary of the Case Study
+The core task is to identify which attributes—ScoreInAssessment, InterviewRating, ExperienceYears, or EducationLevel—are the strongest predictors of a candidate being Selected. This allows the hiring team to prioritize screening steps and focus on candidates who statistically have the highest chance of success, reducing time-to-hire.
+Sub-tasks and Definitions
+| Sub-task | Definition |
+|---|---|
+| Selection Predictor Modeling | Building a classification model to predict the binary outcome of Selected (Yes/No) based on candidate metrics, allowing the quantification of the relative importance of each factor (e.g., Interview Rating vs. Assessment Score). |
+| Candidate Funnel Conversion | Analyzing the data as a pipeline, where factors like EducationLevel or ExperienceYears might influence progression to the InterviewRating stage, and the InterviewRating and ScoreInAssessment influence the final Selected status. |
+| Bias Detection and Fairness Analysis | Checking if high-scoring candidates are disproportionately not Selected based on non-merit factors, or if certain EducationLevel groups are unfairly screened out by initial filters, to ensure an equitable hiring process. |
+| Quality of Hire Correlation | (Requires linking to Employee Data post-hire, but based on this data) Analyzing the statistical relationship between pre-hire metrics (ScoreInAssessment, InterviewRating) and the Selected outcome to establish a baseline for quality-of-hire. |
+4. IT Management: Asset Lifecycle & Maintenance
+This case study is centered on managing the inventory, service life, and condition of corporate IT assets to ensure operational stability and optimize maintenance costs.
+| Key Data Fields | Analysis Focus |
+|---|---|
+| ITAssets.csv | AssetType, PurchaseDate, LastServiceDate, NextServiceDue, Status, Location |
+Summary of the Case Study
+The primary objective is to monitor the health and lifecycle of assets. The analysis involves tracking asset age (from PurchaseDate), forecasting maintenance needs based on NextServiceDue, and identifying failure hotspots by analyzing the distribution of Status (Under Repair, Working) across AssetType and Location.
+Sub-tasks and Definitions
+| Sub-task | Definition |
+|---|---|
+| Asset Age and Depreciation Analysis | Calculating the current age of each asset from its PurchaseDate and grouping by AssetType to inform future budgeting for replacements and calculate book value. |
+| Predictive Maintenance Scheduling | Using the LastServiceDate and NextServiceDue fields to identify and flag assets that are overdue or will soon be due for service, preventing operational downtime. |
+| Failure Rate/Status Hotspot Identification | Analyzing the count and percentage of assets with a non-working Status (e.g., 'Under Repair') and grouping these failures by Location and AssetType to identify problem areas or faulty equipment models. |
+| Inventory Utilization Analysis | Mapping the count of assets by Location and AssetType to ensure that physical inventory aligns with operational needs and identifying potential under/over-utilization of resources. |
+5. Talent Management: Skill Gap Analysis
+This case study focuses on comparing the skills possessed by employees against the skills required for current or future projects, quantifying the skills deficit, and prioritizing training needs.
+| Key Data Fields | Analysis Focus |
+|---|---|
+| SkillGap.csv | CurrentSkill, ProficiencyLevel, ProjectSkillRequired, Gap |
+Summary of the Case Study
+The central theme is to measure and address the difference between CurrentSkill and ProjectSkillRequired, which is summarized in the Gap field. The analysis identifies the most critical skills missing across the workforce and which ProficiencyLevel is most commonly deficient, allowing L&D to create targeted training programs.
+Sub-tasks and Definitions
+| Sub-task | Definition |
+|---|---|
+| Critical Skill Gap Quantification | Identifying the top N skills listed in ProjectSkillRequired that also have the highest number of entries where Gap is 'Yes', indicating the most urgent organizational training needs. |
+| Proficiency Deficit Analysis | Analyzing the distribution of ProficiencyLevel ('Beginner', 'Intermediate', 'Advanced') for employees who have a Gap ('Yes'), to determine if the deficit is primarily in foundational knowledge or advanced expertise. |
+| Targeted Training Recommendation | Grouping the employees by the ProjectSkillRequired where they have a Gap to create targeted cohorts for enrollment in specific courses, maximizing training efficiency. |
+| Skill Mobility Tracking | Analyzing the relationship between the CurrentSkill and the ProjectSkillRequired to determine if employees are being assigned projects that leverage their existing expertise or force them to acquire completely new skills. |
+6. Digital Marketing: Web Traffic & User Behavior Analysis
+This case study is focused on understanding how users interact with a website, measuring the quality of traffic, and identifying areas for website optimization.
+| Key Data Fields | Analysis Focus |
+|---|---|
+| WebTraffic.csv | VisitDate, Device, PageViews, BounceRate, SessionDurationSeconds |
+Summary of the Case Study
+The objective is to assess the engagement and quality of the website traffic. Low BounceRate and high SessionDurationSeconds and PageViews indicate a successful session. The analysis will compare these key metrics across different Device types (Mobile, Tablet, Desktop) and over time (VisitDate) to inform design changes, content strategy, and mobile optimization efforts.
+Sub-tasks and Definitions
+| Sub-task | Definition |
+|---|---|
+| Key Performance Indicator (KPI) Aggregation | Calculating aggregate web metrics (e.g., Average PageViews per session, Average SessionDurationSeconds, Overall BounceRate) to establish performance benchmarks. |
+| Engagement Segmentation | Grouping sessions by high-engagement (low BounceRate, high PageViews) vs. low-engagement and analyzing which Device or time of day (VisitDate) is associated with each group. |
+| Device Performance Comparison | Comparing the core engagement metrics (BounceRate, PageViews, SessionDurationSeconds) across different user Device types to identify specific user experience issues (e.g., high bounce rate on mobile may suggest poor mobile design). |
+| Temporal Trend Analysis | Analyzing how traffic metrics change over time using the VisitDate field (e.g., daily, weekly, or monthly trends) to detect the impact of marketing campaigns or seasonality on user behavior. |
