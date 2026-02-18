@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Semantic Example</title>
+    <style>
+        footer p { text-align: center; }
+        table { border: 1px solid black; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <h1>Main Heading</h1>
+        <nav>
+            <ul>
+                <li><a href="#text">Text</a></li>
+                <li><a href="#lists">Lists</a></li>
+                <li><a href="#table">Table</a></li>
+                <li><a href="#form">Form</a></li>
+                <li><a href="#media">Media</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Text Section -->
+        <section id="text">
+            <h2>Subheading</h2>
+            <article>
+                <p>This is a <strong>bold</strong> word, this is <em>italic</em>, and this is <u>underlined</u>.</p>
+                <p>Here’s a <mark>highlighted text</mark> (modern alternative to <font>).</p>
+            </article>
+        </section>
+
+        <!-- Media Section -->
+        <section id="media">
+            <h2>Media</h2>
+            <figure>
+                <img src="Github_logo.jpg" alt="GitHub Logo" width="250">
+                <figcaption><a href="https://www.github.com">Visit GitHub</a></figcaption>
+            </figure>
+            <figure>
+                <img src="epsf.jpeg" alt="Epsteins Sample Image" width="250">
+                <figcaption>Epsteins Sample Image</figcaption>
+            </figure>
+        </section>
+
+        <!-- Lists Section -->
+        <section id="lists">
+            <h2>Lists</h2>
+            <h3>Ordered List</h3>
+            <ol>
+                <li>First</li>
+                <li>Second</li>
+                <li>Third</li>
+            </ol>
+            <h3>Unordered List</h3>
+            <ul>
+                <li>Apple</li>
+                <li>Banana</li>
+                <li>Cherry</li>
+            </ul>
+        </section>
+
+        <!-- Table Section -->
+        <section id="table">
+            <h2>Sample Table</h2>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                </tr>
+                <tr>
+                    <td>Nikki</td>
+                    <td>25</td>
+                </tr>
+                <tr>
+                    <td>Joe Keery</td>
+                    <td>34</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Form Section -->
+        <section id="form">
+            <h2>Contact Form</h2>
+            <form action="submit" method="post">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br><br>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <input type="submit" value="Submit">
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Kirumada Payaluga Da !</p>
+    </footer>
+</body>
+</html>
