@@ -1,0 +1,65 @@
+To recreate or generate a file like HistoryFragment.java within your specific project context, you would use a prompt that defines the SRS (Software Requirements Specification), the Tech Stack, and the UI Components.
+Here is the complete prompt you can use to generate this specific implementation:
+Prompt: Android History Fragment Implementation
+Project Overview: I am building an Android application called "Traffic01" (Package: com.Aqua.traffic01) that uses TensorFlow Lite for traffic detection. I need a History Fragment that retrieves and displays a user's previous detection results from Firebase.
+1. Software Requirements Specification (SRS):
+•
+User Authentication: The fragment must retrieve the current user's ID using FirebaseAuth. If no user is logged in, it should abort the data fetch.
+•
+Data Source: Use Firebase Realtime Database. The data is stored at the path: history/{userId}/.
+•
+Data Model: The data should be mapped to a POJO class named DetectionResult.
+•
+Data Sorting: The history should be displayed in reverse chronological order (newest detections at the top).
+•
+Real-time Updates: Use a ValueEventListener to ensure the list updates automatically if new detections are added to the database.
+•
+Memory Management: Ensure proper cleanup of the ViewBinding instance in onDestroyView to prevent memory leaks.
+2. Technical Stack & API Versions:
+•
+Language: Java.
+•
+Minimum SDK: API 24 or higher.
+•
+Target SDK: API 34.
+•
+Architecture: Android Fragments with Jetpack Navigation Component.
+•
+View Binding: Enabled (use FragmentHistoryBinding).
+•
+Dependencies:
+◦
+androidx.recyclerview:recyclerview
+◦
+com.google.firebase:firebase-database
+◦
+com.google.firebase:firebase-auth
+3. UI / View Requirements:
+•
+Layout File: fragment_history.xml.
+•
+Primary View: A RecyclerView with the ID rvHistory.
+•
+Layout Manager: Use a vertical LinearLayoutManager.
+•
+Adapter: Use a custom adapter named HistoryAdapter.
+4. Code Structure Instructions:
+1.
+Initialize ViewBinding and the Firebase Database reference in onCreateView.
+2.
+Set up the RecyclerView with the HistoryAdapter.
+3.
+Create a private method loadHistory() to handle the Firebase logic.
+4.
+Inside loadHistory(), fetch the list of DetectionResult objects.
+5.
+Convert the Firebase DataSnapshot into a List<DetectionResult>, reverse the list, and pass it to the adapter.
+Why this prompt works:
+•
+Contextual Awareness: It specifies the exact package name (com.Aqua.traffic01) so the imports are correct.
+•
+Database Schema: It defines the Firebase tree structure (history/{userId}), which is critical for the code to actually function.
+•
+Component Naming: It identifies HistoryAdapter and DetectionResult as existing dependencies, so the AI knows to reference them rather than reinventing them.
+•
+Best Practices: By mentioning onDestroyView and ViewBinding nullification, it ensures the generated code is "production-ready" regarding memory management.
